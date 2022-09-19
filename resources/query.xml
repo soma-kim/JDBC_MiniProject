@@ -20,7 +20,9 @@
 	</entry>
 	
 	<entry key="selectByProductName">
-
+	SELECT *
+	FROM PRODUCT
+	WHERE PRODUCT_NAME LIKE ?
 	</entry>
 	
 	<entry key="updateProduct">
@@ -33,7 +35,7 @@
 	</entry>
 	
 	<entry key="deleteProduct">
-
+	DELETE FROM PRODUCT WHERE PRODUCT_ID LIKE?
 	</entry>
 	
 	</properties>

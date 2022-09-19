@@ -45,9 +45,20 @@ public class ProductService {
         }
         return result;
     }
-    
-	// 상품명 검색(상품 이름으로 키워드 검색)
-	public void selectByProductName() {
+	
+	public ArrayList<Product> selectByProductName(String keyword){
+		
+		// Connection 객체 생성
+		Connection conn = JDBCTemplate.getConnection();
+		
+		// Dao로 전달(생성한 conn과 keyword)
+		ArrayList<Product> list = pd.selectByProductName(conn, keyword);
+		
+		// 트랜잭션 처리할 거 없음
+		JDBCTemplate.close(conn);
+		
+		// 결과 반환
+		return list;
 		
 	}
 
@@ -79,9 +90,25 @@ public class ProductService {
 		
 	}
 	
-	// 상품 삭제(상품 id로 조회해서 삭제)
-	public void deleteProduct() {
+	public int deleteProduct(String productId) {
+		// 1) Connection 객체 생성
+		Connection conn = JDBCTemplate.getConnection();
 		
+		// 2) DAO에 메소드 호출
+		int result = new ProductDao().deleteProduct(conn,productId);
+		
+		// 3) 트랜잭션 처리
+		if(result > 0 ) {
+			JDBCTemplate.commit(conn);
+		}else {
+			JDBCTemplate.rollback(conn);
+		}
+        
+		// 4) Connection 자원 반납
+		JDBCTemplate.close(conn);
+		
+		// 5) 결과값 반환
+		return result;
 	}
 
 }

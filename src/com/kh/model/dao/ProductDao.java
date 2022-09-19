@@ -103,11 +103,52 @@ public class ProductDao {
         }
         return result;
     }
-    
- // 상품명 검색(상품 이름으로 키워드 검색)
- 	public void selectByProductName() {
- 		
- 	}
+
+	public ArrayList<Product> selectByProductName(Connection conn, String keyword){
+		
+		// 필요한 객체 생성
+		ArrayList<Product> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		// 실행할 sql문 작성
+		String sql = prop.getProperty("selectByProductName");
+		
+		try {
+			
+			// PreparedStatemtnt객체 생성
+			pstmt = conn.prepareStatement(sql);
+			
+			// 미완성된 sql문 완성시키기
+			pstmt.setString(1, "%" + keyword + "%");
+			
+			// ResultSet으로 결과 받기
+			rset = pstmt.executeQuery();
+			
+			// ResultSet에 담긴 데이터 옮겨담기
+			while(rset.next()) {
+				
+				// 한 행에 담긴 데이터들 Product타입의 객체로 옯겨담기
+				list.add(new Product(rset.getString("PRODUCT_ID")
+								   , rset.getString("PRODUCT_NAME")
+								   , rset.getInt("PRICE")
+								   , rset.getString("DESCRIPTION")
+								   , rset.getInt("STOCK")));
+				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			
+			// 객체 반납
+			JDBCTemplate.close(rset);
+			JDBCTemplate.close(pstmt);
+		}
+		
+		// 결과 반환
+		return list;
+	}
  	
  	public int updateProduct(Connection conn, Product p) {
  		
@@ -162,9 +203,33 @@ public class ProductDao {
  		
  	}
  	
- 	// 상품 삭제(상품 id로 조회해서 삭제)
- 	public void deleteProduct() {
- 		
- 	}
+ 	public int deleteProduct(Connection conn, String productId) { 
+		// 필요한 변수 설정
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		// SQL문 설정
+		String sql = prop.getProperty("deleteProduct");
+		
+		try {
+			// PreparedStatement 객체 생성
+			pstmt = conn.prepareStatement(sql);
+			
+			// 미완성된 쿼리문인 경우, 값채워넣기
+			pstmt.setString(1, productId);
+			
+			// SQL문 결과 담기(처리된 행의 개수)
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+        	// 자원반납
+			JDBCTemplate.close(pstmt);
+		}
+		
+		// 결과값 반환
+		return result;
+	}
 
 }

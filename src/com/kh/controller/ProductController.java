@@ -48,8 +48,22 @@ public class ProductController {
     }
 
 	
-	public void selectByProductName() {
+	public void selectByProductName(String keyword) {
 		
+		// 1. 전달 받은 값이 한 개이기 때문에 가공할 내용이 없음
+		
+		// 2. Service로 전달 후 list로 결과 값 반환
+		ArrayList<Product> list = ps.selectByProductName(keyword);
+		
+		// 3. 결과에 따른 응답 화면 지정
+		if(list.isEmpty()) { // 비어있다면 (실패)
+			
+			new ProductView().processFail("검색된 결과가 없습니다.");
+		}
+		else { // 비어있지 않다면(성공)
+	
+			new ProductView().displayList(list);
+		}
 	}
 	
 	
@@ -82,10 +96,18 @@ public class ProductController {
 		
 	}
 	
-	public void deleteProduct() {
-		
-	}
+	// 회원 탈퇴를 요청 시 처리해주는 메소드
+		public void deleteProduct(String productId) {
+			
+			// 2) Service에 메소드를 호출
+			int result = new ProductService().deleteProduct(productId);
+			
+			// 3) 성공 / 실패에 따른 응답뷰 호출
+			if(result > 0){
+				new ProductView().processSuccess("해당 상품의 삭제가 성공하였습니다.");
+			}else {
+				new ProductView().processFail("해당 상품이 존재하지 않습니다.");
+			}
+		}
 	
-	
-
 }

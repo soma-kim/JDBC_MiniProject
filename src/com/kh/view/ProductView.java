@@ -77,10 +77,17 @@ public class ProductView {
 	        
 	        }
 	        
-		// 상품명 검색(상품 이름으로 키워드 검색)
-		public void selectByProductName() {
-			
-		}
+	        /**
+	    	 * 검색할 상품명에 대한 메소드
+	    	 * Controller로 전달
+	    	 */
+	    	public void selectByProductName() {
+	    		
+	    		System.out.print("검색할 상품명 입력 : ");
+	    		String keyword = sc.nextLine();
+	    		
+	    		pc.selectByProductName(keyword);
+	    	}
 		
 		/**
 		 * 사용자에게 상품ID, 변경할 정보들(가격, 사양, 재고)를 입력받은 후
@@ -111,9 +118,13 @@ public class ProductView {
 			
 		}
 		
-		// 상품 삭제(상품 id로 조회해서 삭제)
 		public void deleteProduct() {
-			
+			System.out.println("========== 상품 삭제 ==========");
+		
+			System.out.print("삭제할 상품 아이디 : ");
+			String productId = sc.nextLine();
+		
+			pc.deleteProduct(productId);
 		}
 		
 		//-----------------서비스 성공or 실패시 사용하는 메소드---------------------------
