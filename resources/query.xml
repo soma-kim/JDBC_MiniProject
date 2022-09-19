@@ -5,10 +5,17 @@
 	<comment>SQL</comment>
 	
 	<entry key="selectAll">
-	
-		</entry>
+	SELECT PRODUCT_ID
+	     , PRODUCT_NAME
+	     , PRICE
+	     , DESCRIPTION
+	     , STOCK
+	FROM PRODUCT
+	</entry>
 	
 	<entry key="insertProduct">
+	INSERT INTO PRODUCT
+	VALUES (?, ?, ?, ?, ?)
 
 	</entry>
 	
@@ -17,7 +24,7 @@
 	</entry>
 	
 	<entry key="updateProduct">
-	UPDATE *
+	UPDATE PRODUCT
 	SET PRODUCT_NAME = ?
 	  , PRICE = ?
 	  , DESCRIPTION = ?
