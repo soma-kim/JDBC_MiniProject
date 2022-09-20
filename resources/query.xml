@@ -1,41 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-
-	<comment>SQL</comment>
+<comment>query.xml</comment>
+	
+	<entry key="login">
+		SELECT USERID, USERPWD
+		FROM MEMBER
+		WHERE USERID = ?
+	</entry>
 	
 	<entry key="selectAll">
-	SELECT PRODUCT_ID
-	     , PRODUCT_NAME
-	     , PRICE
-	     , DESCRIPTION
-	     , STOCK
-	FROM PRODUCT
+		SELECT PRODUCT_ID
+		     , PRODUCT_NAME
+		     , PRICE
+		     , DESCRIPTION
+		     , STOCK
+		FROM PRODUCT
 	</entry>
 	
 	<entry key="insertProduct">
-	INSERT INTO PRODUCT
-	VALUES (?, ?, ?, ?, ?)
-
+		INSERT INTO PRODUCT VALUES(?,?,?,?,?)
 	</entry>
 	
 	<entry key="selectByProductName">
-	SELECT *
-	FROM PRODUCT
-	WHERE PRODUCT_NAME LIKE ?
+		SELECT *
+		FROM PRODUCT
+		WHERE PRODUCT_NAME LIKE ?
 	</entry>
 	
 	<entry key="updateProduct">
-	UPDATE PRODUCT
-	SET PRODUCT_NAME = ?
-	  , PRICE = ?
-	  , DESCRIPTION = ?
-	  , STOCK = ?
-	WHERE PRODUCT_ID = ?
+		UPDATE PRODUCT
+		SET PRODUCT_NAME = ?
+		  , PRICE = ?
+		  , DESCRIPTION = ?
+		  , STOCK = ?
+		WHERE PRODUCT_ID = ?
 	</entry>
 	
 	<entry key="deleteProduct">
-	DELETE FROM PRODUCT WHERE PRODUCT_ID LIKE?
+		DELETE FROM PRODUCT WHERE PRODUCT_ID = ?
 	</entry>
 	
-	</properties>
+	<entry key="deleteMember">
+		DELETE FROM MEMBER WHERE USERID = ?
+	</entry>
+
+</properties>

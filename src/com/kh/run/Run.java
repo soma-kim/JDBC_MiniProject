@@ -6,10 +6,7 @@ public class Run {
 
 	public static void main(String[] args) {
 		
-		ProductView pv = new ProductView();
+		new ProductView().login();
 		
-		pv.mainMenu();
-
 	}
-
 }

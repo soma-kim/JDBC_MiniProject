@@ -11,8 +11,10 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class JDBCTemplate {
-
+	
+	// 1. Connection 객체를 생성하는 메소드
 	public static Connection getConnection() {
+
 		Connection conn = null;
 
 		Properties prop = new Properties();
@@ -34,7 +36,6 @@ public class JDBCTemplate {
 			e.printStackTrace();
 		}
 		return conn;
-
 	}
 
 	// 2. 전달받은 Connection 객체 반환받는 메소드
@@ -49,7 +50,6 @@ public class JDBCTemplate {
 	}
 
 	// 3.Prepared Statement 객체를 반납하는 메소드
-
 	public static void close(PreparedStatement pstmt) {
 		try {
 			if (pstmt != null && pstmt.isClosed())
@@ -58,9 +58,8 @@ public class JDBCTemplate {
 			e.printStackTrace();
 		}
 	}
-	
-	// 4. Resultset 객체를 반납하는 메소드
 
+	// 4. Resultset 객체를 반납하는 메소드
 	public static void close(ResultSet rset) {
 		try {
 			if (rset != null && rset.isClosed())
@@ -80,14 +79,14 @@ public class JDBCTemplate {
 			e.printStackTrace();
 		}
 	}
+	
 	// 6.전달받은 Connection 객체를 가지고 rollback 시켜주는 메소드
-
 	public static void rollback(Connection conn) {
 		try {
-			conn.rollback();
+			if (conn != null & conn.isClosed())
+				conn.rollback();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-
 }
