@@ -2,47 +2,66 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>query.xml</comment>
+
+<entry key="login">
+	SELECT USERID, USERPWD
+	FROM MEMBER
+	WHERE USERID = ?
+</entry>
+
+<entry key="selectAll">
+	SELECT PRODUCT_ID
+	     , PRODUCT_NAME
+	     , PRICE
+	     , DESCRIPTION
+	     , STOCK
+	FROM PRODUCT
+</entry>
+
+<entry key="insertProduct">
+	INSERT INTO PRODUCT VALUES(?,?,?,?,?)
+</entry>
+
+<entry key="selectByProductName">
+	SELECT *
+	FROM PRODUCT
+	WHERE PRODUCT_NAME LIKE ?
+</entry>
+
+<entry key="updateProduct">
+	UPDATE PRODUCT
+	SET PRODUCT_NAME = ?
+	  , PRICE = ?
+	  , DESCRIPTION = ?
+	  , STOCK = ?
+	WHERE PRODUCT_ID = ?
+</entry>
+
+<entry key="deleteProduct">
+	DELETE FROM PRODUCT WHERE PRODUCT_ID = ?
+</entry>
+
+<entry key="deleteMember">
+	DELETE FROM MEMBER WHERE USERID = ?
+</entry>
+
+<entry key="selectByseller">
+SELECT M.USERID
+FROM PRODUCT P , MEMBER M
+WHERE M.PRODUCT_ID=P.PRODUCT_ID
+AND M.PRODUCT_ID = ?
 	
-	<entry key="login">
-		SELECT USERID, USERPWD
-		FROM MEMBER
-		WHERE USERID = ?
-	</entry>
-	
-	<entry key="selectAll">
-		SELECT PRODUCT_ID
-		     , PRODUCT_NAME
-		     , PRICE
-		     , DESCRIPTION
-		     , STOCK
-		FROM PRODUCT
-	</entry>
-	
-	<entry key="insertProduct">
-		INSERT INTO PRODUCT VALUES(?,?,?,?,?)
-	</entry>
-	
-	<entry key="selectByProductName">
-		SELECT *
-		FROM PRODUCT
-		WHERE PRODUCT_NAME LIKE ?
-	</entry>
-	
-	<entry key="updateProduct">
-		UPDATE PRODUCT
-		SET PRODUCT_NAME = ?
-		  , PRICE = ?
-		  , DESCRIPTION = ?
-		  , STOCK = ?
-		WHERE PRODUCT_ID = ?
-	</entry>
-	
-	<entry key="deleteProduct">
-		DELETE FROM PRODUCT WHERE PRODUCT_ID = ?
-	</entry>
-	
-	<entry key="deleteMember">
-		DELETE FROM MEMBER WHERE USERID = ?
-	</entry>
+</entry>
+
+<entry key="updateByProduct">
+	UPDATE PRODUCT
+	SET STOCK = ?
+	WHERE PRODUCT_ID = ?
+</entry>
+
+<entry key="selectByUserId">
+	SELECT * FROM PRODUCT JOIN MEMBER USING (PRODUCT_ID) WHERE USERID = ?
+</entry>
+
 
 </properties>
