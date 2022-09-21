@@ -41,7 +41,7 @@ public class JDBCTemplate {
 	// 2. 전달받은 Connection 객체 반환받는 메소드
 	public static void close(Connection conn) {
 		try {
-			if (conn != null & conn.isClosed()) {
+			if (conn != null && conn.isClosed()) {
 				conn.close();
 			}
 		} catch (SQLException e) {
@@ -72,7 +72,7 @@ public class JDBCTemplate {
 	// 5. 전달받은 Connection 객체를 가지고 commit 시켜주는 메소드
 	public static void commit(Connection conn) {
 		try {
-			if (conn != null & conn.isClosed())
+			if (conn != null && conn.isClosed())
 				conn.commit();
 		} catch (SQLException e) {
 
@@ -83,7 +83,7 @@ public class JDBCTemplate {
 	// 6.전달받은 Connection 객체를 가지고 rollback 시켜주는 메소드
 	public static void rollback(Connection conn) {
 		try {
-			if (conn != null & conn.isClosed())
+			if (conn != null && conn.isClosed())
 				conn.rollback();
 		} catch (SQLException e) {
 			e.printStackTrace();
