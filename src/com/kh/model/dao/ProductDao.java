@@ -47,7 +47,6 @@ public class ProductDao {
 		String sql = prop.getProperty("login");
 		
 		try {
-			
 			// 매개변수로 전달받은 conn 객체로 pstmt 객체 생성, sql문 전달
 			pstmt = conn.prepareStatement(sql);
 			
@@ -213,17 +212,21 @@ public class ProductDao {
 	 * @return
 	 */
 	public int updateProduct(Connection conn, Product p) {
- 		
+		
+		// 1) 필요한 변수 세팅
  		int result = 0;
  		
+ 		// 2) SQL문 설정
  		String sql = prop.getProperty("updateProduct");
  		
  		try {
  	 		
  			// 맥북에서는 이 구문이 없으면 자동 커밋 설정된 채 롤백할 수 없다는
  			// 오류 메시지가 떠서 추가
- 	 		conn.setAutoCommit(false);
+ 	 		// conn.setAutoCommit(false);
  			
+ 			// 3) sql문을 보낼 수 있는 PreparedStatement 객체 생성
+ 			// 전역 변수로 생성했으므로 바로 가지고 옴
 			pstmt = conn.prepareStatement(sql);
 			
 			/*
@@ -236,31 +239,25 @@ public class ProductDao {
 				WHERE PRODUCT_ID = ?
 			 */
 			
+			// 3-1) 미완성 쿼리문 값 채워 넣기
 			pstmt.setString(1, p.getProductName());
 			pstmt.setInt(2, p.getPrice());
 			pstmt.setString(3, p.getDescription());
-			pstmt.setInt(4, p.getPrice());
+			pstmt.setInt(4, p.getStock());
 			pstmt.setString(5, p.getProductId());
 			
+			// 4) SQL문 결과 담기
 			result = pstmt.executeUpdate();
-			
-			// 트랜잭션 처리
-			if(result > 0) { // 성공
-				conn.commit();
-			} else { // 실패
-				conn.rollback();
-			}
-		
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			
-			// 자원 반납(생성 역순)
+			// 5) 자원 반납(생성 역순)
 			JDBCTemplate.close(pstmt);
 		}
  	
- 		// 결과 반환
+ 		// 6) 결과 반환
  		return result;
  		
  	}	
@@ -316,9 +313,11 @@ public class ProductDao {
 		try {
 			
 			// 3) sql문을 보낼 수 있는 PreparedStatement 객체 생성
+			// 전역 변수로 생성했으므로 바로 가지고 옴
 			pstmt = conn.prepareStatement(sql);
 			
 			// 3-1) 미완성 쿼리문 값 채워 넣기
+			// 	DELETE FROM MEMBER WHERE USERID = ?
 			pstmt.setString(1, userId);
 			
 			// 4) SQL문 결과 담기
@@ -339,7 +338,123 @@ public class ProductDao {
 		
 	}
 	
+	/**
+	 * 
+	 * 본사에서 상품별로 영업담당자를 조회하는 메소드
+	 */
+	public ArrayList<Member> selectByseller(Connection conn, String productId) {
+		
+		//필요한 변수 설정 담당자가 여러명일 수 있으니 빈 list 설정
+		ArrayList<Member> list= new ArrayList<>();
+		// SQL문 생성
+		String sql = prop.getProperty("selectByseller");
+		
+		try {
+			// PreparedStatement 객체 생성
+			pstmt=conn.prepareStatement(sql);
+			
+			// 미완성된 쿼리문인 경우, 값채워넣기
+			pstmt.setString(1, productId);
+			
+			rset=pstmt.executeQuery();
+			
+			//쿼리문에서 값 뽑아오기
+			while(rset.next()) {
+				Member m = new Member();
+				m.setUserId(rset.getString("USERID"));
+				list.add(m);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			//자원 반납
+			JDBCTemplate.close(rset);
+			JDBCTemplate.close(pstmt);
+			
+		}
+		
+		return list;
+		
+	}
+
+	
 	// 담당자용 ----------------------------------------
 	
+	public int updateByProduct(Connection conn, String productId, int stock) {
+		
+		// 객체 생성
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		// sql문 작성
+		String sql = prop.getProperty("updateByProduct");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, stock);
+			pstmt.setString(2, productId);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			// 객체 반납
+			JDBCTemplate.close(pstmt);
+		}
+		
+		// 결과 반환
+		return result;
+	}
+
+	/**
+	 * 담당 상품 검색 요청시 select 문을 실행해 요청을 처리해주는 메소드
+	 * @param conn
+	 * @param id
+	 * @return
+	 */
+	public ArrayList<Product> selectByUserId(Connection conn, String id){
 	
+		// 필요한 객체 생성
+		ArrayList<Product> list = new ArrayList<>();
+		
+		// 실행할 sql문 작성
+		String sql = prop.getProperty("selectByUserId");
+		
+		try {
+			// PreparedStatemtnt객체 생성
+			pstmt = conn.prepareStatement(sql);
+			
+			// sql문에 파라메터 삽입 시키기
+			pstmt.setString(1,id);
+			
+			// ResultSet으로 결과 받기
+			rset = pstmt.executeQuery();
+			
+			// ResultSet에 담긴 데이터 옮겨담기
+			while(rset.next()) {			
+				// 한 행에 담긴 데이터들 Product타입의 객체로 옯겨담기
+				list.add(new Product(rset.getString("PRODUCT_ID")
+								   , rset.getString("PRODUCT_NAME")
+								   , rset.getInt("PRICE")
+								   , rset.getString("DESCRIPTION")
+								   , rset.getInt("STOCK")));			
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			
+			// 객체 반납
+			JDBCTemplate.close(rset);
+			JDBCTemplate.close(pstmt);
+		}
+		
+		// 결과 반환
+		return list;
+	}
+
 }
