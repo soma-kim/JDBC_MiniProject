@@ -163,7 +163,7 @@ public class ProductController {
 	
 	public void deleteMember(String userId) {
 		
-		// 1) Service 메소드를 호출하여 Id를 보내고 int형 변수로 받음
+		// 1) Service 클래스의 메소드를 호출하여 Id를 보내고 int형 변수로 받음
 		int result = ps.deleteMember(userId);
 		
 		// 2) 성공/실패에 따른 응답 뷰 호출
@@ -174,9 +174,64 @@ public class ProductController {
 		}
 		
 	}
+
+	/**
+	 * 
+	 * 상품 아이디로 판매담당자를 조회하는 메소드
+	 */
+	public void selectByseller(String productId) {
+		// 1. 전달 받은 값이 한 개이기 때문에 가공할 내용이 없음
+		
+				// 2. Service로 전달 후 list로 결과 값 반환
+		ArrayList<Member> list = ps.selectByseller(productId);
+				
+				if(list.isEmpty()) { // 비어있다면 (실패)
+					
+					new ProductView().displayNodata("현재 "+ productId+ "는 담당자가 없습니다.");
+				}
+				else { // 비어있지 않다면(성공)
+					
+					  new ProductView().displayIdList(list);
+				}
+	}
+	
 	
 	// 담당자용 ----------------------------------------
-	
-	
-	
+
+	public void updateByProduct(String productId, int stock) {
+		
+		// 가공할 내용 없음
+		
+		int result = ps.updateByProduct(productId, stock);
+		
+		if(result > 0) {
+			
+			new ProductView().displaySuccess("재고 수정에 성공했습니다.");
+		}
+		else {
+			
+			new ProductView().displayFail("재고 수정에 실패했습니다.");
+		}
+	}
+
+	/**
+	 * 담당 상품 검색 요청을 처리해주는 메소드
+	 * @param id
+	 */
+	public void selectByUserId(String id) {
+		
+		// 1. 전달 받은 값이 한 개이기 때문에 가공할 내용이 없음
+		
+		// 2. Service로 전달 후 list로 결과 값 반환
+		ArrayList<Product> list = ps.selectByUserId(id);
+		
+		// 3. 결과에 따른 응답 화면 지정
+		if(list.isEmpty()) {     // 비어있다면 (실패)
+			new ProductView().displayNodata(id + "로 검색된 결과가 없습니다.");
+		}
+		else {       // 비어있지 않다면(성공)			
+			new ProductView().displayList(list);
+		}
+	}
+
 }	
