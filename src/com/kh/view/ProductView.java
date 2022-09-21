@@ -38,7 +38,7 @@ public class ProductView {
 				System.out.println("로그인 실패. 다시 입력해주세요 (" + count + "/5)"); // 로그인 실패 및 횟수 안내
 				count++; // 코드 실행 후 count 1 증가
 			}
-			else { // count == 5 가 되는 경우
+			else if(count == 5) { // count == 5 가 되는 경우
 				System.out.println("로그인 5회 실패. 프로그램을 종료합니다."); return;
 			}
 		}
@@ -74,9 +74,9 @@ public class ProductView {
 			case 3 : selectByProductName(); break;
 			case 4 : updateProduct(); break;
 			case 5 : deleteProduct(); break;
-			case 6 : break;
+			case 6 : selectByseller(); break;
 			case 7 : deleteMember(); break;
-			case 0 : System.out.println("프로그램을 종료합니다."); return;
+			case 0 : System.out.println("프로그램을 종료합니다."); System.exit(0); // return 할 경우 login 메소드에서 로그인 검사를 하기 때문에 프로그램 바로 종료시킴
 			default : System.out.println("없는 메뉴입니다. 다시 입력해주세요.");
 			}
 		}
@@ -95,7 +95,7 @@ public class ProductView {
 			System.out.println("1. 상품 전체 조회하기");
 			System.out.println("2. 상품명 검색하기");
 			System.out.println("3. 담당 상품 검색");
-			System.out.println("4. 상품 재고 수정하기");
+			System.out.println("4. 상품 재고 수정하기"); 
 			System.out.println("0. 프로그램 종료");
 			System.out.println("-----------------------------");
 			System.out.print("메뉴 입력 : ");
@@ -106,9 +106,9 @@ public class ProductView {
 			switch(menu) {
 			case 1 : selectAll(); break;
 			case 2 : selectByProductName(); break;
-			case 3 : break;
-			case 4 : break;
-			case 0 : System.out.println("프로그램을 종료합니다."); return;
+			case 3 : selectByUserId(id); break;
+			case 4 : updateByProduct(); break;
+			case 0 : System.out.println("프로그램을 종료합니다."); System.exit(0);
 			default : System.out.println("없는 메뉴입니다. 다시 입력해주세요.");
 			}
 		}
@@ -191,13 +191,11 @@ public class ProductView {
 	}
 	
 	/**
-	 * 사용자에게 상품ID, 변경할 정보들(가격, 사양, 재고)를 입력받은 후
+	 * 사용자(관리자)에게 상품ID, 변경할 정보들(가격, 사양, 재고)를 입력받은 후
 	 * 변경을 요청하는 화면
 	 */
 	public void updateProduct() {
-		
-		Product p = new Product();
-		
+	
 		System.out.println("=== 상품 정보 수정 ===");
 		System.out.print("수정할 상품 아이디 : ");
 		String productId = sc.nextLine();
@@ -237,15 +235,53 @@ public class ProductView {
 	public void deleteMember() {
 		System.out.println("=== 계정 삭제 ===");
 		
-		System.out.print("삭제할 계정 아이디: ");
+		System.out.print("삭제할 계정 아이디 : ");
 		String userId = sc.nextLine();
 		
 		pc.deleteMember(userId);
 		
-	}
+	}	
 	
+	/**
+	 * 상품 아이디를 입력받아 담당자를 조회하는 화면
+	 */
+	public void selectByseller() {
+		System.out.println("=== 영업 담당자 조회 ===");
+	
+		System.out.print("조회할 상품 아이디 : ");
+		String productId = sc.nextLine();
+		
+		pc.selectByseller(productId);
+		
+		
+	}
+
 	// 담당자용 ----------------------------------------
 	
+	/**
+	 * 상품 재고 수정
+	 */
+	public void updateByProduct() {
+		
+		System.out.println("=== 상품 재고 수정 ===");
+		System.out.print("수정할 상품 아이디 : ");
+		String productId = sc.nextLine();
+
+		System.out.print("수정할 재고 입력 : ");
+		int stock = sc.nextInt();
+		sc.nextLine();
+		
+		pc.updateByProduct(productId, stock);
+	}
+
+	/**
+	 * 담당 상품 검색 메소드
+	 * Controller로 전달
+	 */
+	public void selectByUserId(String id) {
+		
+		pc.selectByUserId(id);
+	}
 	
 	
 	// 처리 결과 화면들 ----------------------------------------
@@ -277,4 +313,15 @@ public class ProductView {
 		
 		System.out.println(message);
 	}
+	
+	// 담당자 아이디 조회 결과를 위한 별도의 Member List 출력 화면
+	public void displayIdList(ArrayList<Member> list) {
+		
+		System.out.println("조회된 결과는 " + list.size() + " 개 입니다.");
+		for(int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i).getUserId());
+		}
+	}
+
+
 }
