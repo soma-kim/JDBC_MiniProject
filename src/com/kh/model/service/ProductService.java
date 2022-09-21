@@ -105,7 +105,7 @@ public class ProductService {
 		// 1. Connection 객체 생성
 		Connection conn = JDBCTemplate.getConnection();
 		
-		// 2. Dao 메소드 호출(conn, keyword)
+		// 2. Dao 메소드 호출(conn, p)
 		int result = pd.updateProduct(conn, p);
 		
 		// 3. 트랜잭션 처리
@@ -172,9 +172,63 @@ public class ProductService {
 		
 	}
 	
+	public ArrayList<Member> selectByseller(String productId) {
+		// 1) Connection 객체 생성
+		Connection conn = JDBCTemplate.getConnection();
+
+		// 2) conn 객체를 매개변수로 넘겨주고, Dao 결과를 ArrayList 로 받음
+		ArrayList<Member> list = pd.selectByseller(conn, productId);
+
+		// 3) Connection 자원 반납
+		JDBCTemplate.close(conn);
+
+		// 4) 결과값 반환
+		return list;
+
+	}
+
 	// 담당자용 ----------------------------------------
 	
-	
-	
+
+	public int updateByProduct(String productId, int stock) {
+		
+		// Connection객체 생성
+		Connection conn = JDBCTemplate.getConnection();
+		
+		int result = pd.updateByProduct(conn, productId, stock);
+		
+		if(result > 0) {
+			
+			JDBCTemplate.commit(conn);
+		}
+		else {
+			
+			JDBCTemplate.rollback(conn);
+		}
+		
+		JDBCTemplate.close(conn);
+		
+		return result;
+	}
+
+	/**
+	 * 담당 상품 검색 조회를 실행할 때 필요한 Connection 객체 생성해주는 메소드
+	 * @param id
+	 * @return
+	 */
+	public ArrayList<Product> selectByUserId(String id){
+		
+		// Connection 객체 생성
+		Connection conn = JDBCTemplate.getConnection();
+		
+		// Dao로 전달(생성한 conn과 ID)
+		ArrayList<Product> list = pd.selectByUserId(conn, id);
+		
+		// 트랜잭션 처리할 거 없음
+		JDBCTemplate.close(conn);
+		
+		// 결과 반환
+		return list;
+	}
 
 }
